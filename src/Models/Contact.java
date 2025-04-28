@@ -1,5 +1,6 @@
 package Models;
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Contact {
 	private String nom, prenom, ville;
@@ -12,12 +13,12 @@ public class Contact {
 		this.telephoneNumbers = new ArrayList<>();
 	}
 	
-    //Add phone number to list
+    // Add phone number to list
     public void addPhoneNumber(String regionCode, String number) {
         this.telephoneNumbers.add(new PhoneNumber(regionCode, number));
     }
     
-    //Getters
+    // Getters
     public String getNom() {
     	return this.nom;
     }
@@ -30,7 +31,7 @@ public class Contact {
     	return this.ville;
     }
     
-    //Setters
+    // Setters
     public void setNom(String nom) {
     	this.nom = nom;
     }
@@ -39,10 +40,11 @@ public class Contact {
     	this.prenom = prenom;
     }
     
-    public void setVille(String Ville) {
+    public void setVille(String ville) {
     	this.ville = ville;
     }
     
+    @Override
     public String toString() {
     	return this.nom + " " + this.prenom + ": " + this.ville;
     }

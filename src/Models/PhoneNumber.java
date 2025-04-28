@@ -8,7 +8,7 @@ public class PhoneNumber {
 		this.regionCode = regionCode;
 	}
 	
-	//Getters
+	// Getters
 	public String getRegionCode() {
 		return this.regionCode;
 	}
@@ -17,7 +17,7 @@ public class PhoneNumber {
 		return this.number;
 	}
 	
-	//Setters
+	// Setters
 	public void setRegionCode(String regionCode) {
 		this.regionCode = regionCode;
 	}
@@ -26,6 +26,7 @@ public class PhoneNumber {
 		this.number = number;
 	}
 	
+	@Override
 	public String toString() {
 		return this.regionCode + " " + this.number;
 	}
