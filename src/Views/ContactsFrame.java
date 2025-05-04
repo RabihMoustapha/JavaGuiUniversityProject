@@ -26,8 +26,8 @@ public class ContactsFrame extends JFrame {
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
         add(titleLabel, BorderLayout.NORTH);
 
-        // Table (empty for now, can fill it later with a model)
-        contactsTable = new JTable(); // Table with no data yet
+        // Table (empty for now)
+        contactsTable = new JTable();
         JScrollPane tableScrollPane = new JScrollPane(contactsTable);
         add(tableScrollPane, BorderLayout.CENTER);
 

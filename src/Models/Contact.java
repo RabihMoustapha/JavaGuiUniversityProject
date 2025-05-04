@@ -1,6 +1,5 @@
 package Models;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 public class Contact {
 	private String nom, prenom, ville;
