@@ -1,5 +1,5 @@
 package Main;
-
+import Views.ContactWindow;
 import Views.MainFrame;
 import Controllers.MainController;
 
