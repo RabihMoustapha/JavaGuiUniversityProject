@@ -6,14 +6,14 @@ public class Contact {
 	private List<PhoneNumber> telephoneNumbers;
 	
 	public Contact(String nom, String prenom, String ville) {
-		this.nom = nom;
-		this.prenom = prenom;
-		this.ville = ville;
+		this.nom = nom != null ? nom : "TOTO";
+		this.prenom = prenom != null ? prenom : "TOTO";
+		this.ville = ville != null ? ville : "Beirut";
 		this.telephoneNumbers = new ArrayList<>();
 	}
 	
     // Add phone number to list
-    public void addPhoneNumber(String regionCode, String number) {
+    public void addPhoneNumber(int regionCode, int number) {
         this.telephoneNumbers.add(new PhoneNumber(regionCode, number));
     }
     

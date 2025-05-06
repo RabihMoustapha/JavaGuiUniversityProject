@@ -1,28 +1,28 @@
 package Models;
 
 public class PhoneNumber {
-	private String regionCode, number;
+	private int regionCode, number;
 	
-	public PhoneNumber(String regionCode, String number) {
-		this.number = number;
-		this.regionCode = regionCode;
+	public PhoneNumber(int regionCode, int number) {
+		this.number = number < 0 ? number : 00-000000;
+		this.regionCode = regionCode < 0 ? regionCode : 961;
 	}
 	
 	// Getters
-	public String getRegionCode() {
+	public int getRegionCode() {
 		return this.regionCode;
 	}
 
-	public String getNumber() {
+	public int getNumber() {
 		return this.number;
 	}
 	
 	// Setters
-	public void setRegionCode(String regionCode) {
+	public void setRegionCode(int regionCode) {
 		this.regionCode = regionCode;
 	}
 	
-	public void setNumber(String number) {
+	public void setNumber(int number) {
 		this.number = number;
 	}
 	

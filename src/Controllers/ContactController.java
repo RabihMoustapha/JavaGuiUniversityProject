@@ -1,11 +1,14 @@
 package Controllers;
 
+import Models.Contact;
+import Models.PhoneNumber;
 import javax.swing.*;
 import java.awt.event.*;
 import java.util.*;
 import java.util.Comparator;
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
 
 public class ContactController {
     private DefaultListModel<String> listModel;
@@ -147,7 +150,7 @@ public class ContactController {
             String[] groups = {"Aucun", "Famille", "Amis", "Collègues", "Autres"};
             JCheckBox[] groupBoxes = new JCheckBox[groups.length];
             for (int i = 0; i < groups.length; i++) {
-                groupBoxes[i] = new JCheckBox(groups[i]);
+                groupBoxes[i] = new JCheckBox(groups[i]);;
                 groupPanel.add(groupBoxes[i]);
             }
 
@@ -160,6 +163,18 @@ public class ContactController {
 
             saveButton.addActionListener(evt -> {
                 // Logique de sauvegarde (à implémenter selon vos besoins)
+            	try{
+            		File getContactFile = new File("Contacts.dat");
+            		if(!getContactFile.exists()) getContactFile = new File("Contacts.dat");
+            		FileOutputStream f = new FileOutputStream("Contacts.dat", true); 
+            		DataOutputStream d = new DataOutputStream(f);
+            		Contact c = new Contact(firstNameField.getText(), lastNameField.getText(), cityField.getText());
+            		PhoneNumber p = new PhoneNumber(Integer.parseInt(regionCodeField.getText()), Integer.parseInt(phoneNumberField.getText()));
+            		d.writeUTF(c.getNom()); d.writeUTF(c.getPrenom()); d.writeUTF(c.getVille()); d.writeInt(p.getRegionCode()); d.writeInt(p.getNumber());
+            	}catch(IOException ioe) {
+            		ioe.printStackTrace();
+            		JOptionPane.showMessageDialog(null, "Error");
+            	}
                 JOptionPane.showMessageDialog(contactFrame, "Contact enregistré !");
                 contactFrame.dispose();
             });
