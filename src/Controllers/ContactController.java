@@ -1,10 +1,11 @@
 package Controllers;
 
 import javax.swing.*;
-import javax.swing.event.*;
 import java.awt.event.*;
 import java.util.*;
 import java.util.Comparator;
+import javax.swing.*;
+import java.awt.*;
 
 public class ContactController {
     private DefaultListModel<String> listModel;
@@ -53,30 +54,7 @@ public class ContactController {
         contacts.forEach(listModel::addElement);
     }
 
-    // Ajout d'un nouveau contact
-    public ActionListener getAddContactListener() {
-        return e -> {
-            String input = JOptionPane.showInputDialog(
-                null, 
-                "Format: Prénom Nom - Ville", 
-                "Nouveau contact", 
-                JOptionPane.PLAIN_MESSAGE
-            );
-            
-            if (input != null && !input.trim().isEmpty()) {
-                if (!input.contains("-")) {
-                    JOptionPane.showMessageDialog(
-                        null, 
-                        "Format invalide. Utilisez 'Prénom Nom - Ville'", 
-                        "Erreur", 
-                        JOptionPane.ERROR_MESSAGE
-                    );
-                    return;
-                }
-                listModel.addElement(input.trim());
-            }
-        };
-    }
+
 
     // Visualisation du contact sélectionné
     public ActionListener getViewListener() {
@@ -113,6 +91,91 @@ public class ContactController {
             }
         };
     }
+    
+    public ActionListener getAddContactListener() {
+        return e -> {
+            JFrame contactFrame = new JFrame("Gestion des contacts - Nouveau Contact");
+            contactFrame.setSize(500, 450);
+            contactFrame.setLocationRelativeTo(null);
+            contactFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+            JPanel mainPanel = new JPanel();
+            mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+            mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+            // Titre
+            JLabel titleLabel = new JLabel("Ajouter un nouveau contact");
+            titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+            titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            mainPanel.add(titleLabel);
+            mainPanel.add(Box.createVerticalStrut(10));
+
+            // Nom et prénom
+            JPanel namePanel = new JPanel(new GridLayout(2, 2, 10, 5));
+            namePanel.setBorder(BorderFactory.createTitledBorder("Nom du contact"));
+            JTextField firstNameField = new JTextField();
+            JTextField lastNameField = new JTextField();
+            namePanel.add(new JLabel("Prénom :"));
+            namePanel.add(firstNameField);
+            namePanel.add(new JLabel("Nom :"));
+            namePanel.add(lastNameField);
+            mainPanel.add(namePanel);
+            mainPanel.add(Box.createVerticalStrut(10));
+
+            // Informations : ville, code région, téléphone
+            JPanel infoPanel = new JPanel(new GridLayout(3, 2, 10, 5));
+            infoPanel.setBorder(BorderFactory.createTitledBorder("Informations de contact"));
+            JTextField cityField = new JTextField();
+            JTextField regionCodeField = new JTextField();
+            JTextField phoneNumberField = new JTextField();
+
+            infoPanel.add(new JLabel("Ville :"));
+            infoPanel.add(cityField);
+            infoPanel.add(new JLabel("Code Région :"));
+            infoPanel.add(regionCodeField);
+            infoPanel.add(new JLabel("Téléphone :"));
+            infoPanel.add(phoneNumberField);
+
+            mainPanel.add(infoPanel);
+            mainPanel.add(Box.createVerticalStrut(10));
+
+            // Groupes
+            JPanel groupPanel = new JPanel();
+            groupPanel.setLayout(new BoxLayout(groupPanel, BoxLayout.Y_AXIS));
+            groupPanel.setBorder(BorderFactory.createTitledBorder("Groupes"));
+
+            String[] groups = {"Aucun", "Famille", "Amis", "Collègues", "Autres"};
+            JCheckBox[] groupBoxes = new JCheckBox[groups.length];
+            for (int i = 0; i < groups.length; i++) {
+                groupBoxes[i] = new JCheckBox(groups[i]);
+                groupPanel.add(groupBoxes[i]);
+            }
+
+            mainPanel.add(groupPanel);
+
+            // Boutons
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            JButton saveButton = new JButton("Enregistrer");
+            JButton cancelButton = new JButton("Annuler");
+
+            saveButton.addActionListener(evt -> {
+                // Logique de sauvegarde (à implémenter selon vos besoins)
+                JOptionPane.showMessageDialog(contactFrame, "Contact enregistré !");
+                contactFrame.dispose();
+            });
+
+            cancelButton.addActionListener(evt -> contactFrame.dispose());
+
+            buttonPanel.add(saveButton);
+            buttonPanel.add(cancelButton);
+            mainPanel.add(Box.createVerticalStrut(10));
+            mainPanel.add(buttonPanel);
+
+            contactFrame.setContentPane(mainPanel);
+            contactFrame.setVisible(true);
+        };
+    }
+
 
     // Suppression du contact
     public ActionListener getDeleteListener() {

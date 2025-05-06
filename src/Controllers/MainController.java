@@ -26,29 +26,28 @@ public class MainController extends JFrame {
     
     private void openContactsWindow() {
         JFrame contextFrame = new JFrame("Liste des Contacts");
-        contextFrame.setTitle("Projet NFA035");
-        contextFrame.setSize(800, 500);
+        contextFrame.setSize(900, 550);
         contextFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         contextFrame.setLocationRelativeTo(null);
 
-        // Panel principal
-        JPanel mainPanel = new JPanel(new BorderLayout());
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        mainPanel.setBackground(Color.WHITE);
 
-        // Panel gauche
+        // ---- PANEL GAUCHE ----
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-        leftPanel.setBackground(Color.WHITE);
-        leftPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        leftPanel.setBorder(BorderFactory.createTitledBorder("Actions"));
+        leftPanel.setBackground(new Color(245, 245, 245));
 
-        JLabel contextLabel = new JLabel("Contacts");
+        JLabel contextLabel = new JLabel("Tri des contacts");
         contextLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        contextLabel.setForeground(Color.BLUE);
         contextLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JButton sortByFirstName = new JButton("Sort by first name");
-        JButton sortByLastName = new JButton("Sort by last name");
-        JButton sortByCity = new JButton("Sort by City");
-        JButton addContactBtn = new JButton("Add new contact");
+        JButton sortByFirstName = new JButton("Trier par prénom");
+        JButton sortByLastName = new JButton("Trier par nom");
+        JButton sortByCity = new JButton("Trier par ville");
+        JButton addContactBtn = new JButton("Ajouter un contact");
 
         leftPanel.add(contextLabel);
         leftPanel.add(Box.createVerticalStrut(10));
@@ -60,49 +59,53 @@ public class MainController extends JFrame {
         leftPanel.add(Box.createVerticalStrut(20));
         leftPanel.add(addContactBtn);
 
-        // Panel central
-        JPanel centerPanel = new JPanel(new BorderLayout());
+        // ---- PANEL CENTRAL ----
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BorderLayout(10, 10));
         centerPanel.setBackground(Color.WHITE);
-        
+
         JLabel titleLabel = new JLabel("Gestion des contacts", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         centerPanel.add(titleLabel, BorderLayout.NORTH);
 
-        // Champ de recherche
-        JPanel searchPanel = new JPanel(new BorderLayout());
-        JLabel searchLabel = new JLabel("Search");
+        // Barre de recherche
+        JPanel searchPanel = new JPanel(new BorderLayout(5, 5));
+        searchPanel.setBackground(Color.WHITE);
+        JLabel searchLabel = new JLabel("Rechercher : ");
         JTextField searchField = new JTextField();
+        searchField.setPreferredSize(new Dimension(200, 25));
         searchPanel.add(searchLabel, BorderLayout.WEST);
         searchPanel.add(searchField, BorderLayout.CENTER);
         centerPanel.add(searchPanel, BorderLayout.CENTER);
 
-        // Liste de contacts
+        // Liste des contacts
         DefaultListModel<String> listModel = new DefaultListModel<>();
-        for (String contact : ) {
-            listModel.addElement(contact);
-        }
-
         JList<String> contactList = new JList<>(listModel);
+        contactList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        contactList.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         JScrollPane scrollPane = new JScrollPane(contactList);
+        scrollPane.setPreferredSize(new Dimension(300, 300));
         centerPanel.add(scrollPane, BorderLayout.SOUTH);
 
-        // Panel bas
-        JPanel bottomPanel = new JPanel();
-        JButton viewBtn = new JButton("View");
-        JButton updateBtn = new JButton("Update");
-        JButton deleteBtn = new JButton("Delete");
+        // ---- PANEL BAS ----
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton viewBtn = new JButton("Voir");
+        JButton updateBtn = new JButton("Modifier");
+        JButton deleteBtn = new JButton("Supprimer");
         bottomPanel.add(viewBtn);
         bottomPanel.add(updateBtn);
         bottomPanel.add(deleteBtn);
 
+        // ---- AJOUT DES PANELS ----
         mainPanel.add(leftPanel, BorderLayout.WEST);
         mainPanel.add(centerPanel, BorderLayout.CENTER);
         mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
-        // Initialisation du ContactController
+        contextFrame.setContentPane(mainPanel);
+        contextFrame.setVisible(true);
+
+        // ---- CONTROLLERS ----
         ContactController contactCtrl = new ContactController(listModel, contactList);
-        
-        // Attribution des listeners
         sortByFirstName.addActionListener(contactCtrl.getSortByFirstNameListener());
         sortByLastName.addActionListener(contactCtrl.getSortByLastNameListener());
         sortByCity.addActionListener(contactCtrl.getSortByCityListener());
@@ -110,10 +113,8 @@ public class MainController extends JFrame {
         viewBtn.addActionListener(contactCtrl.getViewListener());
         updateBtn.addActionListener(contactCtrl.getUpdateListener());
         deleteBtn.addActionListener(contactCtrl.getDeleteListener());
-
-        contextFrame.add(mainPanel);
-        contextFrame.setVisible(true);
     }
+
     
     private void openGroupsWindow() {
         // ... votre code existant pour openComputation
