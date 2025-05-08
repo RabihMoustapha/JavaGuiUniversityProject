@@ -1,6 +1,7 @@
 package Controllers;
 
 import Models.Contact;
+import java.awt.event.*;
 import Models.PhoneNumber;
 import javax.swing.*;
 import java.awt.event.*;
@@ -147,13 +148,25 @@ public class ContactController {
             groupPanel.setLayout(new BoxLayout(groupPanel, BoxLayout.Y_AXIS));
             groupPanel.setBorder(BorderFactory.createTitledBorder("Groupes"));
 
-            String[] groups = {"Aucun", "Famille", "Amis", "Collègues", "Autres"};
-            JCheckBox[] groupBoxes = new JCheckBox[groups.length];
-            for (int i = 0; i < groups.length; i++) {
-                groupBoxes[i] = new JCheckBox(groups[i]);;
-                groupPanel.add(groupBoxes[i]);
-            }
+            ArrayList<String> groups = new ArrayList<>();
+            try {
+            	File GroupsData = new File("Groups.dat");
+                FileInputStream groupFile = new FileInputStream(GroupsData);
+                DataInputStream d = new DataInputStream(groupFile);
+                
+                while (d.available() > 0) {
+                    groups.add(d.readUTF());
+                }
+                d.close();
+                JCheckBox[] groupBoxes = new JCheckBox[groups.size()];
+                for (int i = 0; i < groups.size(); i++) {
+                    groupBoxes[i] = new JCheckBox(groups.get(i));
+                    groupPanel.add(groupBoxes[i]);
+                }
 
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
             mainPanel.add(groupPanel);
 
             // Boutons
@@ -161,8 +174,8 @@ public class ContactController {
             JButton saveButton = new JButton("Enregistrer");
             JButton cancelButton = new JButton("Annuler");
 
-            saveButton.addActionListener(evt -> {
-                // Logique de sauvegarde (à implémenter selon vos besoins)
+            saveButton.addActionListener(new ActionListener(){
+            	public void actionPerformed(ActionEvent evt) {
             	try{
             		File getContactFile = new File("Contacts.dat");
             		if(!getContactFile.exists()) getContactFile = new File("Contacts.dat");
@@ -177,6 +190,7 @@ public class ContactController {
             	}
                 JOptionPane.showMessageDialog(contactFrame, "Contact enregistré !");
                 contactFrame.dispose();
+            	}
             });
 
             cancelButton.addActionListener(evt -> contactFrame.dispose());
