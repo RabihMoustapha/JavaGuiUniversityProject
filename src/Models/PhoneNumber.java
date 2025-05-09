@@ -1,11 +1,13 @@
 package Models;
 
-public class PhoneNumber {
+import java.io.*;
+public class PhoneNumber implements Serializable {
+    private static final long serialVersionUID = 1L;
 	private int regionCode, number;
 	
 	public PhoneNumber(int regionCode, int number) {
-		this.number = number < 0 ? number : 00-000000;
-		this.regionCode = regionCode < 0 ? regionCode : 961;
+		this.number = number > 0 ? number : 00-000000;
+		this.regionCode = regionCode > 0 ? regionCode : 961;
 	}
 	
 	// Getters

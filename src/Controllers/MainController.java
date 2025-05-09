@@ -2,6 +2,7 @@ package Controllers;
 
 import Views.MainFrame;
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.*;
 
@@ -14,8 +15,17 @@ public class MainController extends JFrame {
     }
 
     private void initController() {
-        view.getContactsButton().addActionListener(e -> openContactsWindow());
-        view.getGroupsButton().addActionListener(e -> openGroupsWindow());
+        view.getContactsButton().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                openContactsWindow();
+            }
+        });
+
+        view.getGroupsButton().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                openGroupsWindow();
+            }
+        });
     }
 
     private void openContactsWindow() {

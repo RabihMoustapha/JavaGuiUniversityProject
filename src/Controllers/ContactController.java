@@ -6,7 +6,7 @@ import Models.PhoneNumber;
 import javax.swing.*;
 import java.awt.event.*;
 import java.util.*;
-import java.util.Comparator;
+import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
@@ -107,14 +107,12 @@ public class ContactController {
             mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
             mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-            // Titre
             JLabel titleLabel = new JLabel("Ajouter un nouveau contact");
             titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
             titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
             mainPanel.add(titleLabel);
             mainPanel.add(Box.createVerticalStrut(10));
 
-            // Nom et prénom
             JPanel namePanel = new JPanel(new GridLayout(2, 2, 10, 5));
             namePanel.setBorder(BorderFactory.createTitledBorder("Nom du contact"));
             JTextField firstNameField = new JTextField();
@@ -126,70 +124,94 @@ public class ContactController {
             mainPanel.add(namePanel);
             mainPanel.add(Box.createVerticalStrut(10));
 
-            // Informations : ville, code région, téléphone
             JPanel infoPanel = new JPanel(new GridLayout(3, 2, 10, 5));
             infoPanel.setBorder(BorderFactory.createTitledBorder("Informations de contact"));
             JTextField cityField = new JTextField();
             JTextField regionCodeField = new JTextField();
             JTextField phoneNumberField = new JTextField();
-
             infoPanel.add(new JLabel("Ville :"));
             infoPanel.add(cityField);
             infoPanel.add(new JLabel("Code Région :"));
             infoPanel.add(regionCodeField);
             infoPanel.add(new JLabel("Téléphone :"));
             infoPanel.add(phoneNumberField);
-
             mainPanel.add(infoPanel);
             mainPanel.add(Box.createVerticalStrut(10));
 
-            // Groupes
             JPanel groupPanel = new JPanel();
             groupPanel.setLayout(new BoxLayout(groupPanel, BoxLayout.Y_AXIS));
             groupPanel.setBorder(BorderFactory.createTitledBorder("Groupes"));
-
             ArrayList<String> groups = new ArrayList<>();
-            try {
-            	File GroupsData = new File("Groups.dat");
-                FileInputStream groupFile = new FileInputStream(GroupsData);
-                DataInputStream d = new DataInputStream(groupFile);
-                
+            JCheckBox[] groupBoxes;
+
+            try (DataInputStream d = new DataInputStream(new FileInputStream("Groups.dat"))) {
                 while (d.available() > 0) {
                     groups.add(d.readUTF());
                 }
-                d.close();
-                JCheckBox[] groupBoxes = new JCheckBox[groups.size()];
-                for (int i = 0; i < groups.size(); i++) {
-                    groupBoxes[i] = new JCheckBox(groups.get(i));
-                    groupPanel.add(groupBoxes[i]);
-                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
 
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
+            groupBoxes = new JCheckBox[groups.size()];
+            for (int i = 0; i < groups.size(); i++) {
+                groupBoxes[i] = new JCheckBox(groups.get(i));
+                groupPanel.add(groupBoxes[i]);
             }
             mainPanel.add(groupPanel);
 
-            // Boutons
             JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
             JButton saveButton = new JButton("Enregistrer");
             JButton cancelButton = new JButton("Annuler");
 
-            saveButton.addActionListener(new ActionListener(){
-            	public void actionPerformed(ActionEvent evt) {
-            	try{
-            		File getContactFile = new File("Contacts.dat");
-            		if(!getContactFile.exists()) getContactFile = new File("Contacts.dat");
-            		FileOutputStream f = new FileOutputStream("Contacts.dat", true); 
-            		DataOutputStream d = new DataOutputStream(f);
-            		Contact c = new Contact(firstNameField.getText(), lastNameField.getText(), cityField.getText());
-            		PhoneNumber p = new PhoneNumber(Integer.parseInt(regionCodeField.getText()), Integer.parseInt(phoneNumberField.getText()));
-            		d.writeUTF(c.getNom()); d.writeUTF(c.getPrenom()); d.writeUTF(c.getVille()); d.writeInt(p.getRegionCode()); d.writeInt(p.getNumber());
-            	}catch(IOException ioe) {
-            		ioe.printStackTrace();
-            		JOptionPane.showMessageDialog(null, "Error");
-            	}
-                JOptionPane.showMessageDialog(contactFrame, "Contact enregistré !");
-                contactFrame.dispose();
+            saveButton.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+                try {
+                    String firstName = firstNameField.getText().trim();
+                    String lastName = lastNameField.getText().trim();
+                    String city = cityField.getText().trim();
+                    int regionCode = Integer.parseInt(regionCodeField.getText().trim());
+                    int phoneNumber = Integer.parseInt(phoneNumberField.getText().trim());
+
+                    if (firstName.isEmpty() || lastName.isEmpty() || city.isEmpty()) {
+                        throw new IllegalArgumentException("Tous les champs doivent être remplis.");
+                    }
+
+                    Contact c = new Contact(firstName, lastName, city);
+                    c.addPhoneNumber(regionCode, phoneNumber);
+
+                    // Load existing contacts (if any)
+                    List<Contact> contacts = new ArrayList<>();
+                    File file = new File("Contacts.dat");
+                    if (file.exists() && file.length() > 0) {
+                        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+                            contacts = (List<Contact>) ois.readObject();
+                        } catch (EOFException eof) {
+                            JOptionPane.showMessageDialog(cancelButton, "Le fichier est vide.");
+                        } catch (Exception readEx) {
+                            readEx.printStackTrace();
+                            JOptionPane.showMessageDialog(contactFrame, "Erreur de lecture du fichier.");
+                            return;
+                        }
+                    }
+                    contacts.add(c); // Add new contact
+                    
+                    // Save full list
+                    try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Contacts.dat", true))) {
+                        oos.writeObject(contacts);
+                        oos.close(); //Close the stream
+                    }
+
+                    JOptionPane.showMessageDialog(contactFrame, "Contact enregistré avec succès !");
+                    contactFrame.dispose();
+
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(contactFrame, "Le code région et le numéro doivent être des entiers.");
+                } catch (IllegalArgumentException ex) {
+                    JOptionPane.showMessageDialog(contactFrame, ex.getMessage());
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(contactFrame, "Erreur lors de l'enregistrement.");
+                }
             	}
             });
 
@@ -204,7 +226,6 @@ public class ContactController {
             contactFrame.setVisible(true);
         };
     }
-
 
     // Suppression du contact
     public ActionListener getDeleteListener() {

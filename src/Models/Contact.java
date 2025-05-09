@@ -1,7 +1,9 @@
 package Models;
 import java.util.*;
+import java.io.*;
 
-public class Contact {
+public class Contact implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private String nom, prenom, ville;
 	private List<PhoneNumber> telephoneNumbers;
 	
