@@ -1,8 +1,13 @@
 package Controllers;
 
 import Views.MainFrame;
+import Helpers.ContactsHelper;
+import Models.Contact;
+
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.table.*;
 
@@ -73,19 +78,31 @@ public class MainController extends JFrame {
         centerPanel.add(titleLabel, BorderLayout.NORTH);
 
         // Barre de recherche
-        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5)); // changé pour FlowLayout pour plus de
-                                                                                // contrôle
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5)); // plus de contrôle
         searchPanel.setBackground(Color.WHITE);
         JLabel searchLabel = new JLabel("Rechercher : ");
         JTextField searchField = new JTextField();
-        searchField.setPreferredSize(new Dimension(120, 25)); // Réduit la largeur ici
+        searchField.setPreferredSize(new Dimension(120, 25));
         searchPanel.add(searchLabel);
         searchPanel.add(searchField);
         centerPanel.add(searchPanel, BorderLayout.CENTER);
 
         // Liste des contacts
-        DefaultListModel<String> listModel = new DefaultListModel<>();
-        JList<String> contactList = new JList<>(listModel);
+        DefaultListModel<Contact> listModel = new DefaultListModel<>();
+        ContactsHelper helper = new ContactsHelper();
+        List<Contact> contacts = new ArrayList<>();
+        try {
+            contacts = helper.readData();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erreur de chargement des contacts.");
+        }
+
+        for (Contact c : contacts) {
+            listModel.addElement(c); // suppose que Contact.toString() est bien défini
+        }
+
+        JList<Contact> contactList = new JList<>(listModel);
         contactList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         contactList.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         JScrollPane scrollPane = new JScrollPane(contactList);
@@ -109,7 +126,7 @@ public class MainController extends JFrame {
         contextFrame.setContentPane(mainPanel);
         contextFrame.setVisible(true);
 
-        // ---- CONTROLLERS ----
+     // ---- CONTROLLERS ----
         ContactController contactCtrl = new ContactController(listModel, contactList);
         sortByFirstName.addActionListener(contactCtrl.getSortByFirstNameListener());
         sortByLastName.addActionListener(contactCtrl.getSortByLastNameListener());
@@ -119,6 +136,7 @@ public class MainController extends JFrame {
         updateBtn.addActionListener(contactCtrl.getUpdateListener());
         deleteBtn.addActionListener(contactCtrl.getDeleteListener());
     }
+
 
     private void openGroupsWindow() {
         JFrame GroupManagerWindow = new JFrame();
