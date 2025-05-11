@@ -1,6 +1,7 @@
 package Controllers;
 
-import Helpers.GroupesHelper;
+import Helpers.GroupsHelper;
+import Models.Contact;
 import Models.Groupe;
 import java.awt.*;
 import java.awt.event.*;
@@ -37,14 +38,20 @@ public class GroupController {
     public ActionListener getSortBySizeListener() {
         return new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                ArrayList<Groupe> Groupes = new ArrayList<>();
+                List<Groupe> groupes = new ArrayList<>();
                 for (int i = 0; i < listModel.getSize(); i++) {
-                    Groupes.add(listModel.getElementAt(i));
+                    groupes.add(listModel.getElementAt(i));
                 }
-                Groupes.sort(Comparator.comparing(Groupe::getVille));
+
+                Collections.sort(groupes, new Comparator<Groupe>() {
+                    @Override
+                    public int compare(Groupe g1, Groupe g2) {
+                        return g2.getNombreContacts() - g1.getNombreContacts();
+                    }
+                });
                 listModel.clear();
-                for (Groupe c : Groupes) {
-                    listModel.addElement(c);
+                for (Groupe g : groupes) {
+                    listModel.addElement(g);
                 }
             }
         };
@@ -243,4 +250,118 @@ public class GroupController {
                 "Aucune sélection",
                 JOptionPane.WARNING_MESSAGE);
     }
+
+    public ActionListener getAddGroupListener() {
+        return new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JFrame contactFrame = new JFrame("Gestion des contacts - Nouveau Contact");
+                contactFrame.setSize(500, 450);
+                contactFrame.setLocationRelativeTo(null);
+                contactFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                JPanel mainPanel = new JPanel();
+                mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+                mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+                JLabel titleLabel = new JLabel("Ajouter un nouveau contact");
+                titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+                titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+                mainPanel.add(titleLabel);
+                mainPanel.add(Box.createVerticalStrut(10));
+                JPanel namePanel = new JPanel(new GridLayout(2, 2, 10, 5));
+                namePanel.setBorder(BorderFactory.createTitledBorder("Nom du contact"));
+                JTextField nameField = new JTextField();
+                namePanel.add(new JLabel("Nom :"));
+                namePanel.add(nameField);
+                mainPanel.add(namePanel);
+                mainPanel.add(Box.createVerticalStrut(10));
+                JPanel infoPanel = new JPanel(new GridLayout(3, 2, 10, 5));
+                infoPanel.setBorder(BorderFactory.createTitledBorder("Informations de contact"));
+                JTextField descriptionField = new JTextField();
+                infoPanel.add(new JLabel("Description :"));
+                infoPanel.add(descriptionField);
+                mainPanel.add(infoPanel);
+                mainPanel.add(Box.createVerticalStrut(10));
+                JPanel groupPanel = new JPanel();
+                groupPanel.setLayout(new BoxLayout(groupPanel, BoxLayout.Y_AXIS));
+                groupPanel.setBorder(BorderFactory.createTitledBorder("Groupes"));
+                ArrayList<String> groups = new ArrayList<>();
+                JCheckBox[] groupBoxes;
+
+                try (DataInputStream d = new DataInputStream(new FileInputStream("Groups.dat"))) {
+                    while (d.available() > 0) {
+                        groups.add(d.readUTF());
+                    }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                groupBoxes = new JCheckBox[groups.size()];
+                for (int i = 0; i < groups.size(); i++) {
+                    groupBoxes[i] = new JCheckBox(groups.get(i));
+                    groupPanel.add(groupBoxes[i]);
+                }
+                mainPanel.add(groupPanel);
+                JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+                JButton saveButton = new JButton("Enregistrer");
+                JButton cancelButton = new JButton("Annuler");
+                saveButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        try {
+                            String Name = nameField.getText().trim();
+                            String Description = descriptionField.getText().trim();
+                            if (Name.isEmpty() || Description.isEmpty()) {
+                                throw new IllegalArgumentException("Tous les champs doivent être remplis.");
+                            }
+                            Groupe c = new Groupe(Name, Description);
+                            List<Groupe> contacts = new ArrayList<>();
+                            File ContactsData = new File("Contacts.dat");
+                            if (ContactsData.exists() && ContactsData.length() > 0) {
+                                try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(ContactsData))) {
+                                    contacts = (List<Groupe>) ois.readObject();
+                                } catch (EOFException eof) {
+                                    JOptionPane.showMessageDialog(contactFrame, "Le fichier est vide.");
+                                } catch (Exception readEx) {
+                                    readEx.printStackTrace();
+                                    JOptionPane.showMessageDialog(contactFrame, "Erreur de lecture du fichier.");
+                                    return;
+                                }
+                            }
+                            contacts.add(c);
+                            try (ObjectOutputStream oos = new ObjectOutputStream(
+                                    new FileOutputStream(ContactsData))) {
+                                oos.writeObject(contacts);
+                            }
+                            JOptionPane.showMessageDialog(contactFrame, "Contact enregistré avec succès !");
+                            contactFrame.dispose();
+                        } catch (NumberFormatException ex) {
+                            JOptionPane.showMessageDialog(contactFrame,
+                                    "Le code région et le numéro doivent être des entiers.");
+                        } catch (IllegalArgumentException ex) {
+                            JOptionPane.showMessageDialog(contactFrame, ex.getMessage());
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                            JOptionPane.showMessageDialog(contactFrame, "Erreur lors de l'enregistrement.");
+                        }
+                    }
+                });
+                cancelButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        contactFrame.dispose();
+                    }
+                });
+                buttonPanel.add(saveButton);
+                buttonPanel.add(cancelButton);
+                mainPanel.add(Box.createVerticalStrut(10));
+                mainPanel.add(buttonPanel);
+                contactFrame.setContentPane(mainPanel);
+                contactFrame.setVisible(true);
+            }
+        };
+    }
+
+    // public ActionListener getEditListener() {
+    // return new ActionListener() {
+    // public void actionPerformed(ActionEvent e) {
+    //
+    // }
+    // }
+    // }
 }

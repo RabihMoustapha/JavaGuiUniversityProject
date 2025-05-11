@@ -8,9 +8,10 @@ import javax.swing.*;
 import javax.swing.table.*;
 import Helpers.ContactsHelper;
 import Models.Contact;
+import Models.Groupe;
 import Views.MainFrame;
 
-public class MainController extends JFrame {
+public class MainController {
     private MainFrame view;
 
     public MainController(MainFrame view) {
@@ -119,7 +120,7 @@ public class MainController extends JFrame {
 
     private void openGroupsWindow() {
         JFrame groupsFrame = new JFrame("Gestion des groupes");
-        groupsFrame.setSize(980, 550);
+        groupsFrame.setSize(900, 550);
         groupsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         groupsFrame.setLocationRelativeTo(null);
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
@@ -129,51 +130,44 @@ public class MainController extends JFrame {
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         leftPanel.setBorder(BorderFactory.createTitledBorder("Actions"));
         leftPanel.setBackground(new Color(245, 245, 245));
-        JLabel groupActionsLabel = new JLabel("Actions des groupes");
-        groupActionsLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        groupActionsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        JButton addGroupButton = new JButton("Ajouter un groupe");
+        JLabel groupActionLabel = new JLabel("Tri des groupes");
+        groupActionLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        groupActionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         JButton sortByNameButton = new JButton("Trier par nom");
         JButton sortBySizeButton = new JButton("Trier par taille");
-        Dimension buttonSize = new Dimension(150, 25);
-        addGroupButton.setPreferredSize(buttonSize);
-        sortByNameButton.setPreferredSize(buttonSize);
-        sortBySizeButton.setPreferredSize(buttonSize);
-        leftPanel.add(groupActionsLabel);
+        JButton addGroupButton = new JButton("Ajouter un groupe");
+        leftPanel.add(groupActionLabel);
         leftPanel.add(Box.createVerticalStrut(10));
-        leftPanel.add(addGroupButton);
-        leftPanel.add(Box.createVerticalStrut(5));
         leftPanel.add(sortByNameButton);
         leftPanel.add(Box.createVerticalStrut(5));
         leftPanel.add(sortBySizeButton);
-        JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
+        leftPanel.add(Box.createVerticalStrut(20));
+        leftPanel.add(addGroupButton);
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BorderLayout(10, 10));
         centerPanel.setBackground(Color.WHITE);
         JLabel titleLabel = new JLabel("Gestion des groupes", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         centerPanel.add(titleLabel, BorderLayout.NORTH);
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
         searchPanel.setBackground(Color.WHITE);
-        JLabel searchLabel = new JLabel("Rechercher un groupe : ");
-        JTextField searchField = new JTextField(20);
-        searchField.setPreferredSize(new Dimension(200, 25));
+        JLabel searchLabel = new JLabel("Rechercher : ");
+        JTextField searchField = new JTextField();
+        searchField.setPreferredSize(new Dimension(120, 25));
         searchPanel.add(searchLabel);
         searchPanel.add(searchField);
         centerPanel.add(searchPanel, BorderLayout.CENTER);
-
-        String[] groupColumns = { "Nom du groupe", "Nombre de contacts" };
-        Object[][] groupData = {
-                { "Famille", 5 },
-                { "Amis", 10 },
-                { "Collègues", 4 },
-                { "Université", 14 },
-                { "École", 3 }
-        };
-
-        DefaultTableModel TableModel = new DefaultTableModel(groupColumns, 0);
-        JTable groupTable = new JTable(TableModel);
-        groupTable.setFont(new Font("Arial", Font.PLAIN, 12));
-        JScrollPane scrollPane = new JScrollPane(groupTable);
-        scrollPane.setPreferredSize(new Dimension(600, 300));
+        DefaultListModel<Groupe> listModel = new DefaultListModel<>();
+        listModel.addElement(new Groupe("Famille", "5"));
+        listModel.addElement(new Groupe("Amis", "10"));
+        listModel.addElement(new Groupe("Collègues", "4"));
+        listModel.addElement(new Groupe("Université", "14"));
+        listModel.addElement(new Groupe("École", "3"));
+        JList<Groupe> groupList = new JList<>(listModel);
+        groupList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        groupList.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        JScrollPane scrollPane = new JScrollPane(groupList);
+        scrollPane.setPreferredSize(new Dimension(300, 300));
         centerPanel.add(scrollPane, BorderLayout.SOUTH);
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton viewButton = new JButton("Voir");
@@ -188,11 +182,11 @@ public class MainController extends JFrame {
         groupsFrame.setContentPane(mainPanel);
         groupsFrame.setVisible(true);
         GroupController groupCtrl = new GroupController(listModel, groupList);
-        addGroupButton.addActionListener(groupCtrl.getAddGroupListener());
         sortByNameButton.addActionListener(groupCtrl.getSortByNameListener());
         sortBySizeButton.addActionListener(groupCtrl.getSortBySizeListener());
+        addGroupButton.addActionListener(groupCtrl.getAddGroupListener());
         viewButton.addActionListener(groupCtrl.getViewListener());
-        editButton.addActionListener(groupCtrl.getEditListener());
+        // editButton.addActionListener(groupCtrl.getEditListener());
         deleteButton.addActionListener(groupCtrl.getDeleteListener());
     }
 }

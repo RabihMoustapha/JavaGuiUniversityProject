@@ -3,12 +3,12 @@ import java.util.*;
 
 public class Groupe {
 	private String nom, description;
-	private Set<Contact> contacts;
+	private static List<Contact> contacts;
 
 	public Groupe(String nom, String description) {
 		this.nom = nom;
 		this.description = description;
-		this.contacts = new HashSet<>();
+		this.contacts = new ArrayList<>();
 	}
 	
 	public void ajouterContact(Contact contact) {
@@ -30,8 +30,8 @@ public class Groupe {
     }
     
 
-    public Set<Contact> getContacts() {
-        return new HashSet<>(contacts);
+    public List<Contact> getContacts() {
+        return new ArrayList<>(contacts);
     }
 
     public void setNom(String nom) {
@@ -42,8 +42,8 @@ public class Groupe {
         this.description = description;
     }
 
-    public int getNombreContacts() {
-        return contacts.size();
+    public static int getNombreContacts() {
+			return contacts.size();
     }
 
     @Override
