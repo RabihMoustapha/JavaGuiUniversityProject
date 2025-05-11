@@ -20,26 +20,17 @@ public class ContactsFrame extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
         setResizable(false);
-
-        // Title
         JLabel titleLabel = new JLabel("Liste des contacts", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
         add(titleLabel, BorderLayout.NORTH);
-
-        // Table (empty for now)
         contactsTable = new JTable();
         JScrollPane tableScrollPane = new JScrollPane(contactsTable);
         add(tableScrollPane, BorderLayout.CENTER);
-
-        // Buttons panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-
         addContactButton = createStyledButton("Ajouter un contact");
         backButton = createStyledButton("Retour");
-
         buttonPanel.add(addContactButton);
         buttonPanel.add(backButton);
-
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
@@ -56,7 +47,6 @@ public class ContactsFrame extends JFrame {
         return button;
     }
 
-    // Getters for Controller
     public JButton getAddContactButton() {
         return addContactButton;
     }

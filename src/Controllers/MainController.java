@@ -118,55 +118,77 @@ public class MainController extends JFrame {
 
 
     private void openGroupsWindow() {
-        JFrame GroupManagerWindow = new JFrame();
-        GroupManagerWindow.setTitle("Projet NFA035");
-        GroupManagerWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        GroupManagerWindow.setSize(600, 400);
-        GroupManagerWindow.setLocationRelativeTo(null);
-        GroupManagerWindow.setLayout(new BorderLayout());
-        JLabel titleLabel = new JLabel("Gestion des contacts", JLabel.CENTER);
+        JFrame groupsFrame = new JFrame("Gestion des groupes");
+        groupsFrame.setSize(980, 550);
+        groupsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        groupsFrame.setLocationRelativeTo(null);
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        mainPanel.setBackground(Color.WHITE);
+        JPanel leftPanel = new JPanel();
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        leftPanel.setBorder(BorderFactory.createTitledBorder("Actions"));
+        leftPanel.setBackground(new Color(245, 245, 245));
+        JLabel groupActionsLabel = new JLabel("Actions des groupes");
+        groupActionsLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        groupActionsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JButton addGroupButton = new JButton("Ajouter un groupe");
+        JButton sortByNameButton = new JButton("Trier par nom");
+        JButton sortBySizeButton = new JButton("Trier par taille");
+        Dimension buttonSize = new Dimension(150, 25);
+        addGroupButton.setPreferredSize(buttonSize);
+        sortByNameButton.setPreferredSize(buttonSize);
+        sortBySizeButton.setPreferredSize(buttonSize);
+        leftPanel.add(groupActionsLabel);
+        leftPanel.add(Box.createVerticalStrut(10));
+        leftPanel.add(addGroupButton);
+        leftPanel.add(Box.createVerticalStrut(5));
+        leftPanel.add(sortByNameButton);
+        leftPanel.add(Box.createVerticalStrut(5));
+        leftPanel.add(sortBySizeButton);
+        JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
+        centerPanel.setBackground(Color.WHITE);
+        JLabel titleLabel = new JLabel("Gestion des groupes", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        titleLabel.setForeground(Color.BLUE);
-        add(titleLabel, BorderLayout.NORTH);
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        add(mainPanel, BorderLayout.CENTER);
-        JPanel leftPanel = new JPanel(new BorderLayout());
-        leftPanel.setBackground(Color.WHITE);
-        JLabel groupLabel = new JLabel("Groups", JLabel.CENTER);
-        groupLabel.setForeground(Color.RED);
-        groupLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        leftPanel.add(groupLabel, BorderLayout.NORTH);
-        JButton addGroupButton = new JButton("Add new Group");
-        leftPanel.add(addGroupButton, BorderLayout.SOUTH);
-        mainPanel.add(leftPanel, BorderLayout.WEST);
-        JPanel centerSpacer = new JPanel();
-        centerSpacer.setPreferredSize(new Dimension(100, 0));
-        centerSpacer.setBackground(Color.CYAN);
-        mainPanel.add(centerSpacer, BorderLayout.CENTER);
-        JPanel rightPanel = new JPanel(new BorderLayout());
-        String[] groupColumns = { "Group name", "Nb. of contacts" };
+        centerPanel.add(titleLabel, BorderLayout.NORTH);
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+        searchPanel.setBackground(Color.WHITE);
+        JLabel searchLabel = new JLabel("Rechercher un groupe : ");
+        JTextField searchField = new JTextField(20);
+        searchField.setPreferredSize(new Dimension(200, 25));
+        searchPanel.add(searchLabel);
+        searchPanel.add(searchField);
+        centerPanel.add(searchPanel, BorderLayout.CENTER);
+        
+        String[] groupColumns = {"Nom du groupe", "Nombre de contacts"};
         Object[][] groupData = {
-                { "Family", 5 },
-                { "Friends", 10 },
-                { "Co-Workers", 4 },
-                { "University", 14 },
-                { "School", 3 },
-                { "High School", 10 },
-                { "Temporary", 5 }
+            {"Famille", 5},
+            {"Amis", 10},
+            {"Collègues", 4},
+            {"Université", 14},
+            {"École", 3}
         };
-        JTable groupTable = new JTable(groupData, groupColumns);
-        JScrollPane groupScroll = new JScrollPane(groupTable);
-        rightPanel.add(groupScroll, BorderLayout.NORTH);
-        String[] contactColumns = { "Contact Name", "Contact City" };
-        JTable contactTable = new JTable(new DefaultTableModel(contactColumns, 0));
-        JScrollPane contactScroll = new JScrollPane(contactTable);
-        rightPanel.add(contactScroll, BorderLayout.CENTER);
-        JPanel bottomButtons = new JPanel();
-        JButton updateButton = new JButton("Update Group");
-        JButton deleteButton = new JButton("Delete");
-        bottomButtons.add(updateButton);
-        bottomButtons.add(deleteButton);
-        rightPanel.add(bottomButtons, BorderLayout.SOUTH);
-        mainPanel.add(rightPanel, BorderLayout.EAST);
+        
+        DefaultTableModel TableModel = new DefaultTableModel(groupColumns, 0);
+        JTable groupTable = new JTable(TableModel);
+        groupTable.setFont(new Font("Arial", Font.PLAIN, 12));
+        JScrollPane scrollPane = new JScrollPane(groupTable);
+        scrollPane.setPreferredSize(new Dimension(600, 300));
+        centerPanel.add(scrollPane, BorderLayout.SOUTH);
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton viewButton = new JButton("Voir");
+        JButton editButton = new JButton("Modifier");
+        JButton deleteButton = new JButton("Supprimer");
+        bottomPanel.add(viewButton);
+        bottomPanel.add(editButton);
+        bottomPanel.add(deleteButton);
+        mainPanel.add(leftPanel, BorderLayout.WEST);
+        mainPanel.add(centerPanel, BorderLayout.CENTER);
+        mainPanel.add(bottomPanel, BorderLayout.SOUTH);
+        groupsFrame.setContentPane(mainPanel);
+        groupsFrame.setVisible(true);
+        
+        // GroupController groupCtrl = new GroupController(...);
+        // addGroupButton.addActionListener(...);
     }
 }
