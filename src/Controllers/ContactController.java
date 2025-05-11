@@ -1,6 +1,4 @@
 package Controllers;
-
-import Models.Contact;
 import Helpers.ContactsHelper;
 import Models.Contact;
 import java.awt.*;

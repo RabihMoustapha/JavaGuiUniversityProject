@@ -1,8 +1,8 @@
 package Main;
+import Controllers.MainController;
 import Views.ContactWindow;
 import Views.ContactsFrame;
 import Views.MainFrame;
-import Controllers.MainController;
 
 public class MainApp {
     public static void main(String[] args) {
