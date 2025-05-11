@@ -1,4 +1,5 @@
 package Controllers;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ public class MainController extends JFrame {
         JLabel titleLabel = new JLabel("Gestion des contacts", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         centerPanel.add(titleLabel, BorderLayout.NORTH);
-        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5)); // plus de contrôle
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
         searchPanel.setBackground(Color.WHITE);
         JLabel searchLabel = new JLabel("Rechercher : ");
         JTextField searchField = new JTextField();
@@ -76,7 +77,7 @@ public class MainController extends JFrame {
         DefaultListModel<Contact> listModel = new DefaultListModel<>();
         ContactsHelper helper = new ContactsHelper();
         List<Contact> contacts = new ArrayList<>();
-        
+
         try {
             contacts = helper.readData();
         } catch (ClassNotFoundException e) {
@@ -115,7 +116,6 @@ public class MainController extends JFrame {
         updateBtn.addActionListener(contactCtrl.getUpdateListener());
         deleteBtn.addActionListener(contactCtrl.getDeleteListener());
     }
-
 
     private void openGroupsWindow() {
         JFrame groupsFrame = new JFrame("Gestion des groupes");
@@ -159,16 +159,16 @@ public class MainController extends JFrame {
         searchPanel.add(searchLabel);
         searchPanel.add(searchField);
         centerPanel.add(searchPanel, BorderLayout.CENTER);
-        
-        String[] groupColumns = {"Nom du groupe", "Nombre de contacts"};
+
+        String[] groupColumns = { "Nom du groupe", "Nombre de contacts" };
         Object[][] groupData = {
-            {"Famille", 5},
-            {"Amis", 10},
-            {"Collègues", 4},
-            {"Université", 14},
-            {"École", 3}
+                { "Famille", 5 },
+                { "Amis", 10 },
+                { "Collègues", 4 },
+                { "Université", 14 },
+                { "École", 3 }
         };
-        
+
         DefaultTableModel TableModel = new DefaultTableModel(groupColumns, 0);
         JTable groupTable = new JTable(TableModel);
         groupTable.setFont(new Font("Arial", Font.PLAIN, 12));
@@ -187,8 +187,12 @@ public class MainController extends JFrame {
         mainPanel.add(bottomPanel, BorderLayout.SOUTH);
         groupsFrame.setContentPane(mainPanel);
         groupsFrame.setVisible(true);
-        
-        // GroupController groupCtrl = new GroupController(...);
-        // addGroupButton.addActionListener(...);
+        GroupController groupCtrl = new GroupController(listModel, groupList);
+        addGroupButton.addActionListener(groupCtrl.getAddGroupListener());
+        sortByNameButton.addActionListener(groupCtrl.getSortByNameListener());
+        sortBySizeButton.addActionListener(groupCtrl.getSortBySizeListener());
+        viewButton.addActionListener(groupCtrl.getViewListener());
+        editButton.addActionListener(groupCtrl.getEditListener());
+        deleteButton.addActionListener(groupCtrl.getDeleteListener());
     }
 }

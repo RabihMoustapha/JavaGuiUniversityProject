@@ -1,7 +1,7 @@
 package Controllers;
 
-import Helpers.ContactsHelper;
-import Models.Contact;
+import Helpers.GroupesHelper;
+import Models.Groupe;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -9,77 +9,61 @@ import java.util.*;
 import java.util.List;
 import javax.swing.*;
 
-public class ContactController {
-    private DefaultListModel<Contact> listModel;
-    private JList<Contact> contactList;
+public class GroupController {
+    private DefaultListModel<Groupe> listModel;
+    private JList<Groupe> GroupeList;
 
-    public ContactController(DefaultListModel<Contact> listModel, JList<Contact> contactList) {
+    public GroupController(DefaultListModel<Groupe> listModel, JList<Groupe> GroupeList) {
         this.listModel = listModel;
-        this.contactList = contactList;
+        this.GroupeList = GroupeList;
     }
 
-    public ActionListener getSortByFirstNameListener() {
+    public ActionListener getSortByNameListener() {
         return new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                ArrayList<Contact> contactList = new ArrayList<>();
+                ArrayList<Groupe> GroupeList = new ArrayList<>();
                 for (int i = 0; i < listModel.getSize(); i++) {
-                    contactList.add(listModel.getElementAt(i));
+                    GroupeList.add(listModel.getElementAt(i));
                 }
-                contactList.sort(Comparator.comparing(Contact::getPrenom));
+                GroupeList.sort(Comparator.comparing(Groupe::getNom));
                 listModel.clear();
-                for (Contact contact : contactList) {
-                    listModel.addElement(contact);
+                for (Groupe Groupe : GroupeList) {
+                    listModel.addElement(Groupe);
                 }
             }
         };
     }
 
-    public ActionListener getSortByLastNameListener() {
+    public ActionListener getSortBySizeListener() {
         return new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                ArrayList<Contact> contactList = new ArrayList<>();
+                ArrayList<Groupe> Groupes = new ArrayList<>();
                 for (int i = 0; i < listModel.getSize(); i++) {
-                    contactList.add(listModel.getElementAt(i));
+                    Groupes.add(listModel.getElementAt(i));
                 }
-                contactList.sort(Comparator.comparing(Contact::getNom));
+                Groupes.sort(Comparator.comparing(Groupe::getVille));
                 listModel.clear();
-                for (Contact contact : contactList) {
-                    listModel.addElement(contact);
-                }
-            }
-        };
-    }
-
-    public ActionListener getSortByCityListener() {
-        return new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                ArrayList<Contact> contacts = new ArrayList<>();
-                for (int i = 0; i < listModel.getSize(); i++) {
-                    contacts.add(listModel.getElementAt(i));
-                }
-                contacts.sort(Comparator.comparing(Contact::getVille));
-                listModel.clear();
-                for (Contact c : contacts) {
+                for (Groupe c : Groupes) {
                     listModel.addElement(c);
                 }
             }
         };
     }
 
-    private void updateListModel(ArrayList<Contact> contacts) {
+    private void updateListModel(ArrayList<Groupe> Groupes) {
         listModel.clear();
-        contacts.forEach(listModel::addElement);
+        Groupes.forEach(listModel::addElement);
     }
 
     public ActionListener getViewListener() {
         return new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int index = contactList.getSelectedIndex();
+                int index = GroupeList.getSelectedIndex();
                 if (index >= 0) {
                     JOptionPane.showMessageDialog(
                             null,
                             "Détails:\n" + listModel.getElementAt(index),
-                            "Fiche contact",
+                            "Fiche Groupe",
                             JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     showSelectionWarning();
@@ -91,12 +75,11 @@ public class ContactController {
     public ActionListener getUpdateListener() {
         return new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int index = contactList.getSelectedIndex();
+                int index = GroupeList.getSelectedIndex();
                 if (index >= 0) {
-                    Contact selected = listModel.getElementAt(index);
+                    Groupe selected = listModel.getElementAt(index);
 
-                    String newPrenom = JOptionPane.showInputDialog(null, "Nouveau prénom :", selected.getPrenom());
-                    String newNom = JOptionPane.showInputDialog(null, "Nouveau nom :", selected.getNom());
+                    String newNom = JOptionPane.showInputDialog(null, "Nouveau prénom :", selected.getNom());
                     String newVille = JOptionPane.showInputDialog(null, "Nouvelle ville :", selected.getVille());
 
                     if (newPrenom != null && newNom != null && newVille != null
@@ -104,7 +87,7 @@ public class ContactController {
                             && !newNom.trim().isEmpty()
                             && !newVille.trim().isEmpty()) {
 
-                        Contact updated = new Contact(newPrenom.trim(), newNom.trim(), newVille.trim());
+                        Groupe updated = new Groupe(newPrenom.trim(), newNom.trim(), newVille.trim());
                         listModel.set(index, updated);
                     }
                 } else {
@@ -114,23 +97,23 @@ public class ContactController {
         };
     }
 
-    public ActionListener getAddContactListener() {
+    public ActionListener getAddGroupeListener() {
         return new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JFrame contactFrame = new JFrame("Gestion des contacts - Nouveau Contact");
-                contactFrame.setSize(500, 450);
-                contactFrame.setLocationRelativeTo(null);
-                contactFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                JFrame GroupeFrame = new JFrame("Gestion des Groupes - Nouveau Groupe");
+                GroupeFrame.setSize(500, 450);
+                GroupeFrame.setLocationRelativeTo(null);
+                GroupeFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 JPanel mainPanel = new JPanel();
                 mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
                 mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-                JLabel titleLabel = new JLabel("Ajouter un nouveau contact");
+                JLabel titleLabel = new JLabel("Ajouter un nouveau Groupe");
                 titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
                 titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
                 mainPanel.add(titleLabel);
                 mainPanel.add(Box.createVerticalStrut(10));
                 JPanel namePanel = new JPanel(new GridLayout(2, 2, 10, 5));
-                namePanel.setBorder(BorderFactory.createTitledBorder("Nom du contact"));
+                namePanel.setBorder(BorderFactory.createTitledBorder("Nom du Groupe"));
                 JTextField firstNameField = new JTextField();
                 JTextField lastNameField = new JTextField();
                 namePanel.add(new JLabel("Prénom :"));
@@ -140,7 +123,7 @@ public class ContactController {
                 mainPanel.add(namePanel);
                 mainPanel.add(Box.createVerticalStrut(10));
                 JPanel infoPanel = new JPanel(new GridLayout(3, 2, 10, 5));
-                infoPanel.setBorder(BorderFactory.createTitledBorder("Informations de contact"));
+                infoPanel.setBorder(BorderFactory.createTitledBorder("Informations de Groupe"));
                 JTextField cityField = new JTextField();
                 JTextField regionCodeField = new JTextField();
                 JTextField phoneNumberField = new JTextField();
@@ -185,50 +168,50 @@ public class ContactController {
                             if (firstName.isEmpty() || lastName.isEmpty() || city.isEmpty()) {
                                 throw new IllegalArgumentException("Tous les champs doivent être remplis.");
                             }
-                            Contact c = new Contact(firstName, lastName, city);
+                            Groupe c = new Groupe(firstName, lastName, city);
                             c.addPhoneNumber(regionCode, phoneNumber);
-                            List<Contact> contacts = new ArrayList<>();
-                            File ContactsData = new File("Contacts.dat");
-                            if (ContactsData.exists() && ContactsData.length() > 0) {
-                                try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(ContactsData))) {
-                                    contacts = (List<Contact>) ois.readObject();
+                            List<Groupe> Groupes = new ArrayList<>();
+                            File GroupesData = new File("Groupes.dat");
+                            if (GroupesData.exists() && GroupesData.length() > 0) {
+                                try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(GroupesData))) {
+                                    Groupes = (List<Groupe>) ois.readObject();
                                 } catch (EOFException eof) {
-                                    JOptionPane.showMessageDialog(contactFrame, "Le fichier est vide.");
+                                    JOptionPane.showMessageDialog(GroupeFrame, "Le fichier est vide.");
                                 } catch (Exception readEx) {
                                     readEx.printStackTrace();
-                                    JOptionPane.showMessageDialog(contactFrame, "Erreur de lecture du fichier.");
+                                    JOptionPane.showMessageDialog(GroupeFrame, "Erreur de lecture du fichier.");
                                     return;
                                 }
                             }
-                            contacts.add(c);
+                            Groupes.add(c);
                             try (ObjectOutputStream oos = new ObjectOutputStream(
-                                    new FileOutputStream(ContactsData))) {
-                                oos.writeObject(contacts);
+                                    new FileOutputStream(GroupesData))) {
+                                oos.writeObject(Groupes);
                             }
-                            JOptionPane.showMessageDialog(contactFrame, "Contact enregistré avec succès !");
-                            contactFrame.dispose();
+                            JOptionPane.showMessageDialog(GroupeFrame, "Groupe enregistré avec succès !");
+                            GroupeFrame.dispose();
                         } catch (NumberFormatException ex) {
-                            JOptionPane.showMessageDialog(contactFrame,
+                            JOptionPane.showMessageDialog(GroupeFrame,
                                     "Le code région et le numéro doivent être des entiers.");
                         } catch (IllegalArgumentException ex) {
-                            JOptionPane.showMessageDialog(contactFrame, ex.getMessage());
+                            JOptionPane.showMessageDialog(GroupeFrame, ex.getMessage());
                         } catch (IOException ex) {
                             ex.printStackTrace();
-                            JOptionPane.showMessageDialog(contactFrame, "Erreur lors de l'enregistrement.");
+                            JOptionPane.showMessageDialog(GroupeFrame, "Erreur lors de l'enregistrement.");
                         }
                     }
                 });
                 cancelButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        contactFrame.dispose();
+                        GroupeFrame.dispose();
                     }
                 });
                 buttonPanel.add(saveButton);
                 buttonPanel.add(cancelButton);
                 mainPanel.add(Box.createVerticalStrut(10));
                 mainPanel.add(buttonPanel);
-                contactFrame.setContentPane(mainPanel);
-                contactFrame.setVisible(true);
+                GroupeFrame.setContentPane(mainPanel);
+                GroupeFrame.setVisible(true);
             }
         };
     }
@@ -236,11 +219,11 @@ public class ContactController {
     public ActionListener getDeleteListener() {
         return new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int index = contactList.getSelectedIndex();
+                int index = GroupeList.getSelectedIndex();
                 if (index >= 0) {
                     int confirm = JOptionPane.showConfirmDialog(
                             null,
-                            "Supprimer ce contact ?",
+                            "Supprimer ce Groupe ?",
                             "Confirmation",
                             JOptionPane.YES_NO_OPTION);
                     if (confirm == JOptionPane.YES_OPTION) {
@@ -256,7 +239,7 @@ public class ContactController {
     private void showSelectionWarning() {
         JOptionPane.showMessageDialog(
                 null,
-                "Veuillez sélectionner un contact",
+                "Veuillez sélectionner un Groupe",
                 "Aucune sélection",
                 JOptionPane.WARNING_MESSAGE);
     }

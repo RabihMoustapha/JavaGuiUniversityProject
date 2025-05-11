@@ -11,7 +11,6 @@ public class Groupe {
 		this.contacts = new HashSet<>();
 	}
 	
-	//  Méthodes pour gérer les contacts
 	public void ajouterContact(Contact contact) {
 		if(!contacts.contains(contact)) {
 			contacts.add(contact);
@@ -22,7 +21,6 @@ public class Groupe {
 		contacts.remove(contact);
 	}
 	
-    //  Getters
     public String getNom() {
         return nom;
     }
@@ -36,7 +34,6 @@ public class Groupe {
         return new HashSet<>(contacts);
     }
 
-    // Setters    
     public void setNom(String nom) {
         this.nom = nom;
     }
@@ -45,7 +42,6 @@ public class Groupe {
         this.description = description;
     }
 
-    // Méthode utilitaire
     public int getNombreContacts() {
         return contacts.size();
     }
