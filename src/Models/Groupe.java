@@ -49,7 +49,6 @@ public class Groupe implements Serializable{
 			return contacts.size();
     }
 
-    @Override
     public String toString() {
         return "Groupe [nom=" + nom + ", description=" + description 
              + ", nombreContacts=" + getNombreContacts() + "]";

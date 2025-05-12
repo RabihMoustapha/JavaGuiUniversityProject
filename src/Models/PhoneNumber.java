@@ -26,7 +26,6 @@ public class PhoneNumber implements Serializable {
 		this.number = number;
 	}
 	
-	@Override
 	public String toString() {
 		return this.regionCode + " " + this.number;
 	}

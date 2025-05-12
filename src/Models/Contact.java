@@ -17,12 +17,10 @@ public class Contact implements Serializable{
 		nextID++;
 	}
 	
-    // Add phone number to list
     public void addPhoneNumber(int regionCode, int number) {
         this.telephoneNumbers.add(new PhoneNumber(regionCode, number));
     }
     
-    // Getters
     public String getNom() {
     	return this.nom;
     }
@@ -35,7 +33,6 @@ public class Contact implements Serializable{
     	return this.ville;
     }
     
-    // Setters
     public void setNom(String nom) {
     	this.nom = nom;
     }
@@ -48,7 +45,6 @@ public class Contact implements Serializable{
     	this.ville = ville;
     }
     
-    @Override
     public String toString() {
     	return this.nom + " " + this.prenom + ": " + this.ville;
     }
