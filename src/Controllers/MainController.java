@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.table.*;
 import Helpers.ContactsHelper;
+import Helpers.GroupsHelper;
 import Models.Contact;
 import Models.Groupe;
 import Views.MainFrame;
@@ -158,14 +159,23 @@ public class MainController {
 		searchPanel.add(searchField);
 		centerPanel.add(searchPanel, BorderLayout.CENTER);
 		DefaultListModel<Groupe> listModel = new DefaultListModel<>();
-		listModel.addElement(new Groupe("Famille", "5"));
-		listModel.addElement(new Groupe("Amis", "10"));
-		listModel.addElement(new Groupe("Collègues", "4"));
-		listModel.addElement(new Groupe("Université", "14"));
-		listModel.addElement(new Groupe("École", "3"));
 		JList<Groupe> groupList = new JList<>(listModel);
 		groupList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		groupList.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		List<Groupe> groups = new ArrayList<>();
+		GroupsHelper helper = new GroupsHelper();
+		
+		try {
+		    groups = helper.loadGroupsFromFile();
+		    listModel.clear();
+		    for (Groupe g : groups) {
+		        listModel.addElement(g);
+		    }
+		} catch (ClassNotFoundException e) {
+		    e.printStackTrace();
+		    JOptionPane.showMessageDialog(null, "Erreur de chargement des contacts.");
+		}
+		
 		JScrollPane scrollPane = new JScrollPane(groupList);
 		scrollPane.setPreferredSize(new Dimension(300, 300));
 		centerPanel.add(scrollPane, BorderLayout.SOUTH);
@@ -183,6 +193,8 @@ public class MainController {
 		groupsFrame.setVisible(true);
 		GroupController groupCtrl = new GroupController(listModel, groupList);
 		addGroupButton.addActionListener(groupCtrl.getAddGroupListener());
+		sortByNameButton.addActionListener(groupCtrl.getSortByNameListener());
+		sortBySizeButton.addActionListener(groupCtrl.getSortBySizeListener());
 		viewButton.addActionListener(groupCtrl.getViewListener());
 		editButton.addActionListener(groupCtrl.getUpdateListener());
 		deleteButton.addActionListener(groupCtrl.getDeleteListener());

@@ -2,6 +2,8 @@ package Controllers;
 
 import Helpers.GroupsHelper;
 import Models.Groupe;
+import java.util.*;
+import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -9,7 +11,7 @@ import java.awt.event.*;
 public class GroupController {
 	private DefaultListModel<Groupe> listModel;
 	private JList<Groupe> groupeList;
-	private GroupsHelper helper = new GroupsHelper();
+	protected GroupsHelper helper = new GroupsHelper();
 
 	public GroupController(DefaultListModel<Groupe> listModel, JList<Groupe> groupeList) {
 		this.listModel = listModel;
@@ -94,6 +96,48 @@ public class GroupController {
 
 				groupFrame.setContentPane(mainPanel);
 				groupFrame.setVisible(true);
+			}
+		};
+	}
+	
+	public ActionListener getSortByNameListener() {
+		return new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				List<Groupe> SortedList = new ArrayList<>();
+				List<Groupe> groups = new ArrayList<>();
+				try {
+					groups = helper.loadGroupsFromFile();
+					for(int i=0; i < groups.size(); i++) {
+						for(int j=0; j < groups.size(); j++) {
+							if(groups.get(i).getNom().charAt(0) < groups.get(j).getNom().charAt(0)) {
+								SortedList.add(groups.get(i));
+							}
+						}
+					}
+				} catch (ClassNotFoundException e1) {
+					e1.printStackTrace();
+				}
+			}
+		};
+	}
+	
+	public ActionListener getSortBySizeListener() {
+		return new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				List<Groupe> SortedList = new ArrayList<>();
+				List<Groupe> groups = new ArrayList<>();
+				try {
+					groups = helper.loadGroupsFromFile();
+					for(int i=0; i < groups.size(); i++) {
+						for(int j=0; j < groups.size(); j++) {
+							if(groups.get(i).getNombreContacts() < groups.get(j).getNombreContacts()) {
+								SortedList.add(groups.get(i));
+							}
+						}
+					}
+				} catch (ClassNotFoundException e1) {
+					e1.printStackTrace();
+				}
 			}
 		};
 	}

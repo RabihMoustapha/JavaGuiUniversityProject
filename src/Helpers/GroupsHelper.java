@@ -6,19 +6,19 @@ import javax.swing.*;
 import Models.Groupe;
 
 public class GroupsHelper {
-    public void loadGroupsFromFile(DefaultListModel<Groupe> listModel) {
-        File file = new File("Groups.dat");
-        if (file.exists()) {
-            try (ObjectInputStream ois = new ObjectInputStream(
-                    new FileInputStream(file))) {
-                List<Groupe> groupes = (List<Groupe>) ois.readObject();
-                listModel.clear();
-                groupes.forEach(listModel::addElement);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
+	public List<Groupe> loadGroupsFromFile() throws ClassNotFoundException {
+	    List<Groupe> groupes = new ArrayList<>();
+	    File file = new File("Groups.dat");
+	    if (file.exists()) {
+	        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+	            groupes = (List<Groupe>) ois.readObject();
+	            ois.close();
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
+	        }
+	    }
+	    return groupes;
+	}
     
     public void saveGroupsToFile(DefaultListModel<Groupe> listModel) {
         List<Groupe> groupes = new ArrayList<>();
