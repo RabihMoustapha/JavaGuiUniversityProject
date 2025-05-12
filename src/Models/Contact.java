@@ -4,14 +4,17 @@ import java.io.*;
 
 public class Contact implements Serializable{
 	private static final long serialVersionUID = 1L;
+	int id, nextID = 1;
 	private String nom, prenom, ville;
 	private List<PhoneNumber> telephoneNumbers;
 	
-	public Contact(String nom, String prenom, String ville) {
-		this.nom = nom != null ? nom : "TOTO";
-		this.prenom = prenom != null ? prenom : "TOTO";
-		this.ville = ville != null ? ville : "Beirut";
+	public Contact(int id, String nom, String prenom, String ville) {
+		this.id = nextID;
+		this.nom = nom;
+		this.prenom = prenom;
+		this.ville = ville;
 		this.telephoneNumbers = new ArrayList<>();
+		nextID++;
 	}
 	
     // Add phone number to list

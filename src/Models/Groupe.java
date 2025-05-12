@@ -1,14 +1,17 @@
 package Models;
+
+import java.io.*;
 import java.util.*;
 
-public class Groupe {
+public class Groupe implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private String nom, description;
 	private static List<Contact> contacts;
 
-	public Groupe(String nom, String description) {
+	public Groupe(String nom, String description){
 		this.nom = nom;
 		this.description = description;
-		this.contacts = new ArrayList<Contact>();
+		this.contacts = new ArrayList<>();
 	}
 	
 	public void ajouterContact(Contact contact) {
@@ -20,7 +23,7 @@ public class Groupe {
 	public void retirerContact(Contact contact) {
 		contacts.remove(contact);
 	}
-	
+
     public String getNom() {
         return nom;
     }
