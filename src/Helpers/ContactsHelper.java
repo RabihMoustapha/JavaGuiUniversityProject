@@ -7,7 +7,7 @@ import Models.Contact;
 
 public class ContactsHelper {
 	public List<Contact> readData() throws ClassNotFoundException{
-	    List<Contact> contacts = new ArrayList<>();
+	    List<Contact> contacts = new ArrayList<Contact>();
 	    File ContactsData = new File("Contacts.dat");
 	    if (ContactsData.exists() && ContactsData.length() > 0) {
 	        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(ContactsData))) {

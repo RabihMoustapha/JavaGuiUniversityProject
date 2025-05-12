@@ -8,7 +8,7 @@ public class Groupe {
 	public Groupe(String nom, String description) {
 		this.nom = nom;
 		this.description = description;
-		this.contacts = new ArrayList<>();
+		this.contacts = new ArrayList<Contact>();
 	}
 	
 	public void ajouterContact(Contact contact) {

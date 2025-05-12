@@ -182,11 +182,9 @@ public class MainController {
 		groupsFrame.setContentPane(mainPanel);
 		groupsFrame.setVisible(true);
 		GroupController groupCtrl = new GroupController(listModel, groupList);
-		sortByNameButton.addActionListener(groupCtrl.getSortByNameListener());
-		sortBySizeButton.addActionListener(groupCtrl.getSortBySizeListener());
 		addGroupButton.addActionListener(groupCtrl.getAddGroupListener());
 		viewButton.addActionListener(groupCtrl.getViewListener());
-		// editButton.addActionListener(groupCtrl.getEditListener());
+		editButton.addActionListener(groupCtrl.getUpdateListener());
 		deleteButton.addActionListener(groupCtrl.getDeleteListener());
 	}
 }
