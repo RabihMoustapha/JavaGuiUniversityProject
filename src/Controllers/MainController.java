@@ -10,6 +10,7 @@ import Helpers.ContactsHelper;
 import Helpers.GroupsHelper;
 import Models.Contact;
 import Models.Groupe;
+import Views.AddContactsFrame;
 import Views.ContactsFrame;
 import Views.MainFrame;
 import Views.GroupsFrame;
@@ -37,7 +38,8 @@ public class MainController {
 	}
 
 	private void openContactsWindow() {
-		ContactsFrame c = new ContactsFrame();
+		ContactsFrame contacts = new ContactsFrame();
+		AddContactsFrame addContacts = new AddContactsFrame();
 	}
 	
 	private void openGroupsWindow() {

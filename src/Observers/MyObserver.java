@@ -1,5 +1,5 @@
 package Observers;
 
-public class MyObserver {
-	
+public interface MyObserver {
+	abstract void update();
 }
