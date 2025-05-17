@@ -6,6 +6,7 @@ import java.io.*;
 import java.util.*;
 import javax.swing.*;
 import Models.Contact;
+import Models.Groupe;
 import Models.PhoneNumber;
 
 public class AddContactsFrame extends JFrame {
@@ -64,26 +65,29 @@ public class AddContactsFrame extends JFrame {
 		JPanel groupPanel = new JPanel();
 		groupPanel.setLayout(new BoxLayout(groupPanel, BoxLayout.Y_AXIS));
 		groupPanel.setBorder(BorderFactory.createTitledBorder("Groupes"));
-		ArrayList<String> groups = new ArrayList<>();
+		Set<Groupe> groups = new HashSet<>();
 		JCheckBox[] groupBoxes;
 
-		try (DataInputStream d = new DataInputStream(new FileInputStream("Groups.dat"))) {
-			while (d.available() > 0) {
-				groups.add(d.readUTF());
-			}
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Groups.dat"))) {
+			groups.add((Groupe) ois.readObject());
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
 		groupBoxes = new JCheckBox[groups.size()];
-		for (int i = 0; i < groups.size(); i++) {
-			groupBoxes[i] = new JCheckBox(groups.get(i));
+
+		int i = 0;
+		for (Groupe group : groups) {
+			groupBoxes[i] = new JCheckBox(group);
 			groupPanel.add(groupBoxes[i]);
+			i++;
 		}
 
 		mainPanel.add(groupPanel);
+
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		JButton saveButton = new JButton("Enregistrer");
 		JButton cancelButton = new JButton("Annuler");
+
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -99,7 +103,7 @@ public class AddContactsFrame extends JFrame {
 					PhoneNumber number = new PhoneNumber(regionCode, phoneNumber);
 					c.addPhoneNumber(number);
 					try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))) {
-						
+
 					} catch (EOFException eof) {
 						JOptionPane.showMessageDialog(null, "Le fichier est vide.");
 					} catch (Exception readEx) {
@@ -108,7 +112,7 @@ public class AddContactsFrame extends JFrame {
 						return;
 					}
 					try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Contacts.dat"))) {
-						
+
 					}
 					JOptionPane.showMessageDialog(null, "Contact enregistré avec succès !");
 				} catch (NumberFormatException ex) {

@@ -1,22 +1,19 @@
 package Helpers;
+
 import java.io.*;
-import java.util.List;
-import java.util.ArrayList;
-import javax.swing.JOptionPane;
+import java.util.*;
+import javax.swing.*;
 import Models.Contact;
 
 public class ContactsHelper {
-	public List<Contact> readData() throws ClassNotFoundException{
-	    List<Contact> contacts = new ArrayList<Contact>();
-	    File ContactsData = new File("Contacts.dat");
-	    if (ContactsData.exists() && ContactsData.length() > 0) {
-	        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(ContactsData))) {
-	            contacts = (List<Contact>) ois.readObject();
-	        } catch (IOException ioe) {
-	            ioe.printStackTrace();
-	            JOptionPane.showMessageDialog(null, "Erreur de lecture du fichier de contacts.");
-	        }
-	    }
-	    return contacts;
+	public Set<Contact> readData(){
+		Set<Contact> contacts = new HashSet<>();
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))) {
+			contacts = (Set<Contact>) ois.readObject();
+		} catch (IOException | ClassNotFoundException ioe) {
+			ioe.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Erreur de lecture du fichier de contacts.");
+		}
+		return contacts;
 	}
 }

@@ -18,16 +18,20 @@ public class ContactsFrame extends JFrame {
 		setSize(900, 550);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
+
 		JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 		mainPanel.setBackground(Color.WHITE);
+
 		JPanel leftPanel = new JPanel();
 		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 		leftPanel.setBorder(BorderFactory.createTitledBorder("Actions"));
 		leftPanel.setBackground(new Color(245, 245, 245));
+
 		JLabel contextLabel = new JLabel("Tri des contacts");
 		contextLabel.setFont(new Font("Arial", Font.BOLD, 14));
 		contextLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
 		JButton sortByFirstName = new JButton("Trier par prénom");
 		JButton sortByLastName = new JButton("Trier par nom");
 		JButton sortByCity = new JButton("Trier par ville");
@@ -41,30 +45,30 @@ public class ContactsFrame extends JFrame {
 		leftPanel.add(sortByCity);
 		leftPanel.add(Box.createVerticalStrut(20));
 		leftPanel.add(addContactBtn);
+
 		JPanel centerPanel = new JPanel();
 		centerPanel.setLayout(new BorderLayout(10, 10));
 		centerPanel.setBackground(Color.WHITE);
+
 		JLabel titleLabel = new JLabel("Gestion des contacts", SwingConstants.CENTER);
 		titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
 		centerPanel.add(titleLabel, BorderLayout.NORTH);
+
 		JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
 		searchPanel.setBackground(Color.WHITE);
+
 		JLabel searchLabel = new JLabel("Rechercher : ");
 		JTextField searchField = new JTextField();
 		searchField.setPreferredSize(new Dimension(120, 25));
 		searchPanel.add(searchLabel);
 		searchPanel.add(searchField);
 		centerPanel.add(searchPanel, BorderLayout.CENTER);
+
 		DefaultListModel<Contact> listModel = new DefaultListModel<>();
 		ContactsHelper helper = new ContactsHelper();
-		List<Contact> contacts = new ArrayList<>();
+		Set<Contact> contacts = new HashSet<>();
 
-		try {
-			contacts = helper.readData();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Erreur de chargement des contacts.");
-		}
+		contacts = helper.readData();
 
 		for (Contact c : contacts) {
 			listModel.addElement(c);
@@ -73,9 +77,11 @@ public class ContactsFrame extends JFrame {
 		JList<Contact> contactList = new JList<>(listModel);
 		contactList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		contactList.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
 		JScrollPane scrollPane = new JScrollPane(contactList);
 		scrollPane.setPreferredSize(new Dimension(300, 300));
 		centerPanel.add(scrollPane, BorderLayout.SOUTH);
+
 		JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		JButton viewBtn = new JButton("Voir");
 		JButton updateBtn = new JButton("Modifier");
@@ -86,8 +92,10 @@ public class ContactsFrame extends JFrame {
 		mainPanel.add(leftPanel, BorderLayout.WEST);
 		mainPanel.add(centerPanel, BorderLayout.CENTER);
 		mainPanel.add(bottomPanel, BorderLayout.SOUTH);
+
 		setContentPane(mainPanel);
 		setVisible(true);
+
 		ContactController contactCtrl = new ContactController(listModel, contactList);
 		sortByFirstName.addActionListener(contactCtrl.getSortByFirstNameListener());
 		sortByLastName.addActionListener(contactCtrl.getSortByLastNameListener());

@@ -61,6 +61,6 @@ public class Contact extends MyObservable {
 	}
 
 	public String toString() {
-		return this.nom + " " + this.prenom + ": " + this.ville;
+		return this.nom + " " + this.prenom + ": " + this.ville + " " + this.telephoneNumbers;
 	}
 }

@@ -41,7 +41,7 @@ public class MainController {
 		ContactsFrame contacts = new ContactsFrame();
 		AddContactsFrame addContacts = new AddContactsFrame();
 	}
-	
+
 	private void openGroupsWindow() {
 		GroupsFrame g = new GroupsFrame();
 	}
