@@ -1,20 +1,17 @@
 package Models;
 import java.util.*;
 import java.io.*;
+import Observers.MyObserver;
 
-public class Contact implements Serializable{
-	private static final long serialVersionUID = 1L;
-	int id, nextID = 1;
+public class Contact extends MyObserver{
 	private String nom, prenom, ville;
 	private List<PhoneNumber> telephoneNumbers;
 	
-	public Contact(int id, String nom, String prenom, String ville) {
-		this.id = nextID;
+	public Contact(String nom, String prenom, String ville) {
 		this.nom = nom;
 		this.prenom = prenom;
 		this.ville = ville;
 		this.telephoneNumbers = new ArrayList<>();
-		nextID++;
 	}
 	
     public void addPhoneNumber(int regionCode, int number) {

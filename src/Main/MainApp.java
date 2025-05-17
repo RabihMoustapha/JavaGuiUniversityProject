@@ -1,7 +1,6 @@
 package Main;
 import Controllers.MainController;
-import Views.ContactWindow;
-import Views.ContactsFrame;
+import Views.AddContactsFrame;
 import Views.MainFrame;
 
 public class MainApp {
